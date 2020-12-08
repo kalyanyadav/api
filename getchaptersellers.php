@@ -1,0 +1,53 @@
+<?php 
+if (isset($_SERVER['HTTP_ORIGIN'])) {
+        header("Access-Control-Allow-Origin:*");
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Max-Age: 86400'); // cache for 1 day
+    }
+	if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+ 
+        if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+            header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+ 
+        if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+            header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+ 
+        exit(0);
+    }
+ 	
+	$postdata = file_get_contents("php://input");
+    $request = json_decode($postdata);
+	include("config.php");
+    $country_id =  $request->country_id;
+    $chapter_id = $request->chapter_id;
+        
+		$sql = "select * from subscription_chapter where chapter_id='$chapter_id' ";
+		$result =mysqli_query($conn,$sql);
+		$count = mysqli_num_rows($result);
+		if($count >0){
+		
+			while ($row = mysqli_fetch_assoc($result)) {
+			$user_id[] = $row["user_id"];
+				 //print_r ($row);
+			}
+			
+			foreach($user_id as $val){
+			    $getusers = "select * from users where id = '$val' and country_id='$country_id'";
+			    $res = mysqli_query($conn,$getusers);
+			    if($res){
+			        while($urow= mysqli_fetch_assoc($res)){
+			            $outp[]=$urow;
+			        }
+			    }
+			}
+					
+		}
+		else{
+			$outp="0";
+		}
+		
+		$outp= json_encode($outp,JSON_INVALID_UTF8_IGNORE);
+		echo($outp);
+		$conn->close();
+	
+?>
