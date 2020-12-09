@@ -14,7 +14,7 @@ function log_function($transaction_name, $transaction_desc, $transaction_source,
         $unix = $d.$t;
         $transaction_id = $unix;
         $transaction_date = date('d-m-Y H:i:s a');
-        $querry = "INSERT INTO `transaction_log` (`transaction_id`, `transaction_name`, `transaction_source`, `transaction_desc`, `transaction_user`, `transaction_status`, `transaction_date`,`$created`) 
+        $querry = "INSERT INTO `transaction_log` (`transaction_id`, `transaction_name`, `transaction_source`, `transaction_desc`, `transaction_user`, `transaction_status`, `transaction_date`,`created`) 
         VALUES ('$transaction_id', '$transaction_name', '$os', '$transaction_desc', '$transaction_user', $transaction_status, '$transaction_date','$created')";
         $result = mysqli_query($conn,$querry);
         
